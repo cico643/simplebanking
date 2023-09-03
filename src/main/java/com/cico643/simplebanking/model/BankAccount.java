@@ -3,8 +3,10 @@ package com.cico643.simplebanking.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +21,10 @@ public class BankAccount {
     @Column(unique = true)
     private String accountNumber;
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createDate;
 
     @OneToMany(mappedBy = "account", targetEntity = Transaction.class)
     private Set<Transaction> transactions = new HashSet<>();
