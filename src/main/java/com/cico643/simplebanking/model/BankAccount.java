@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,11 +21,7 @@ public class BankAccount {
     @Column(unique = true)
     private String accountNumber;
     private BigDecimal balance = BigDecimal.ZERO;
-
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Instant createDate;
-
+    private LocalDateTime createDate;
     @OneToMany(mappedBy = "account", targetEntity = Transaction.class)
     @JsonManagedReference
     private Set<Transaction> transactions = new HashSet<>();
@@ -34,9 +29,10 @@ public class BankAccount {
     public BankAccount() {
     }
 
-    public BankAccount(String owner, String accountNumber) {
+    public BankAccount(String owner, String accountNumber, LocalDateTime createDate) {
         this.owner = owner;
         this.accountNumber = accountNumber;
+        this.createDate = createDate;
     }
 
     public void post(Transaction transaction) {
@@ -75,11 +71,11 @@ public class BankAccount {
         this.transactions = transactions;
     }
 
-    public Instant getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Instant createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 }

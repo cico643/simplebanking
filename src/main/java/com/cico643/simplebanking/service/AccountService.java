@@ -36,7 +36,7 @@ public class AccountService {
     }
 
     public BankAccount create(CreateBankAccountRequest body) {
-        BankAccount bankAccount = new BankAccount(body.getOwner(), body.getAccountNumber());
+        BankAccount bankAccount = new BankAccount(body.getOwner(), body.getAccountNumber(), getLocalDateTimeNow());
         var savedAccount = this.bankAccountRepository.save(bankAccount);
         log.info("Account with account number [" + savedAccount.getAccountNumber() + "] has been successfully created");
         return savedAccount;
