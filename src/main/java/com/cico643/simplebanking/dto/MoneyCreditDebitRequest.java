@@ -5,12 +5,12 @@ import jakarta.validation.constraints.Min;
 
 import java.math.BigDecimal;
 
-public class DepositMoneyRequest {
+public class MoneyCreditDebitRequest {
     @Min(0)
     private BigDecimal amount;
 
     @JsonCreator
-    public DepositMoneyRequest(BigDecimal amount) {
+    public MoneyCreditDebitRequest(BigDecimal amount) {
         this.amount = amount;
     }
 

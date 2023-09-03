@@ -1,7 +1,7 @@
 package com.cico643.simplebanking.controller;
 
 import com.cico643.simplebanking.dto.CreateBankAccountRequest;
-import com.cico643.simplebanking.dto.DepositMoneyRequest;
+import com.cico643.simplebanking.dto.MoneyCreditDebitRequest;
 import com.cico643.simplebanking.dto.GenericApiResponse;
 import com.cico643.simplebanking.model.BankAccount;
 import com.cico643.simplebanking.service.AccountService;
@@ -45,13 +45,26 @@ public class AccountController {
 
     @PostMapping("/credit/{accountNumber}")
     public ResponseEntity<GenericApiResponse<String>> deposit(@PathVariable String accountNumber,
-                                                                   @Valid @RequestBody DepositMoneyRequest body) {
+                                                                   @Valid @RequestBody MoneyCreditDebitRequest body) {
         String approvalCode = this.accountService.deposit(body, accountNumber);
         GenericApiResponse<String> genericApiResponse = new GenericApiResponse<>(
             true,
             HttpStatus.OK,
             "Deposited " + body.getAmount() + " to account with number [" + accountNumber + "]",
             approvalCode
+        );
+        return new ResponseEntity<>(genericApiResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/debit/{accountNumber}")
+    public ResponseEntity<GenericApiResponse<String>> withdraw(@PathVariable String accountNumber,
+                                                              @Valid @RequestBody MoneyCreditDebitRequest body) {
+        String approvalCode = this.accountService.withdraw(body, accountNumber);
+        GenericApiResponse<String> genericApiResponse = new GenericApiResponse<>(
+                true,
+                HttpStatus.OK,
+                "Withdraw " + body.getAmount() + " from account with number [" + accountNumber + "]",
+                approvalCode
         );
         return new ResponseEntity<>(genericApiResponse, HttpStatus.OK);
     }
