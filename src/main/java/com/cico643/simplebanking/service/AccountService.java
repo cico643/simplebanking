@@ -1,20 +1,33 @@
 package com.cico643.simplebanking.service;
 
 import com.cico643.simplebanking.dto.CreateBankAccountRequest;
+import com.cico643.simplebanking.dto.DepositMoneyRequest;
 import com.cico643.simplebanking.exception.BankAccountNotFoundException;
 import com.cico643.simplebanking.model.BankAccount;
+import com.cico643.simplebanking.model.DepositTransaction;
 import com.cico643.simplebanking.repository.BankAccountRepository;
+import com.cico643.simplebanking.repository.DepositTransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 @Service
 public class AccountService {
     private final BankAccountRepository bankAccountRepository;
+    private final DepositTransactionRepository depositTransactionRepository;
+    private final Clock clock;
     private final Logger log = LoggerFactory.getLogger(AccountService.class);
 
-    public AccountService(BankAccountRepository bankAccountRepository) {
+    public AccountService(BankAccountRepository bankAccountRepository,
+                          DepositTransactionRepository depositTransactionRepository,
+                          Clock clock) {
         this.bankAccountRepository = bankAccountRepository;
+        this.depositTransactionRepository = depositTransactionRepository;
+        this.clock = clock;
     }
 
     public BankAccount create(CreateBankAccountRequest body) {
@@ -30,5 +43,23 @@ public class AccountService {
                 );
         log.info("Fetched account with account number [" + accountNumber + "]");
         return bankAccount;
+    }
+
+    public String deposit(DepositMoneyRequest body, String accountNumber) {
+        BankAccount bankAccount = this.getAccountByNumber(accountNumber);
+        DepositTransaction depositTransaction = new DepositTransaction(
+                bankAccount,
+                body.getAmount(),
+                getLocalDateTimeNow()
+        );
+        bankAccount.post(depositTransaction);
+        var savedTransaction = this.depositTransactionRepository.save(depositTransaction);
+        log.info("Deposited " + body.getAmount() + " to account with number [" + accountNumber + "]");
+        return savedTransaction.approvalCode;
+    }
+
+    private LocalDateTime getLocalDateTimeNow() {
+        Instant instant = clock.instant();
+        return LocalDateTime.ofInstant(instant, Clock.systemDefaultZone().getZone());
     }
 }

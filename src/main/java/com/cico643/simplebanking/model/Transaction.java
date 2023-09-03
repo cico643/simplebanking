@@ -1,5 +1,6 @@
 package com.cico643.simplebanking.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -12,12 +13,15 @@ import java.util.Objects;
 public abstract class Transaction {
     @Id
     @UuidGenerator
-    private String approvalCode;
+    public String approvalCode;
     public LocalDateTime date;
     public BigDecimal amount;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
+    )
     @JoinColumn(name = "account_number", nullable = false)
+    @JsonBackReference
     public BankAccount account;
 
     @Enumerated(EnumType.STRING)

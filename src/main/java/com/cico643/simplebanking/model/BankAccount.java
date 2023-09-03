@@ -1,5 +1,6 @@
 package com.cico643.simplebanking.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class BankAccount {
     private Instant createDate;
 
     @OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+    @JsonManagedReference
     private Set<Transaction> transactions = new HashSet<>();
 
     public BankAccount() {
@@ -71,5 +73,13 @@ public class BankAccount {
 
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public Instant getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Instant createDate) {
+        this.createDate = createDate;
     }
 }
