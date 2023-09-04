@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Setup {
+    public static final String ACCOUNT_ENDPOINT = "/account/v1";
     public BankAccount createBankAccount() {
         return new BankAccount("Cihat Yeşildağ", "12345", getLocalDateTime());
     }
