@@ -33,7 +33,7 @@ public class AccountController {
 
     @GetMapping("/{accountNumber}")
     public ResponseEntity<GenericApiResponse<BankAccount>> getAccountByNumber(@PathVariable String accountNumber) {
-        BankAccount account = this.accountService.getAccountByNumber(accountNumber);
+        BankAccount account = this.accountService.getAccountByNumber(accountNumber, true);
         GenericApiResponse<BankAccount> genericApiResponse = new GenericApiResponse<>(
             true,
             HttpStatus.OK,

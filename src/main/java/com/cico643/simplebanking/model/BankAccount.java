@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -77,5 +78,29 @@ public class BankAccount {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BankAccount that = (BankAccount) o;
+
+        if (!Objects.equals(owner, that.owner)) return false;
+        if (!accountNumber.equals(that.accountNumber)) return false;
+        if (!Objects.equals(balance, that.balance)) return false;
+        if (!Objects.equals(createDate, that.createDate)) return false;
+        return Objects.equals(transactions, that.transactions);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = owner != null ? owner.hashCode() : 0;
+        result = 31 * result + accountNumber.hashCode();
+        result = 31 * result + (balance != null ? balance.hashCode() : 0);
+        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
+        result = 31 * result + (transactions != null ? transactions.hashCode() : 0);
+        return result;
     }
 }

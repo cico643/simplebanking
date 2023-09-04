@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Transaction {
     @Id
     @UuidGenerator
@@ -24,8 +25,8 @@ public abstract class Transaction {
     @JsonBackReference
     public BankAccount account;
 
-    @Enumerated(EnumType.STRING)
-    public TransactionType type;
+    @Column(name = "type", insertable = false, updatable = false)
+    public String type;
 
     public abstract void action(BigDecimal amount);
 
@@ -39,8 +40,7 @@ public abstract class Transaction {
         if (!Objects.equals(approvalCode, that.approvalCode)) return false;
         if (!Objects.equals(date, that.date)) return false;
         if (!Objects.equals(amount, that.amount)) return false;
-        if (!Objects.equals(account, that.account)) return false;
-        return type == that.type;
+        return Objects.equals(account, that.account);
     }
 
     @Override
@@ -49,7 +49,6 @@ public abstract class Transaction {
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (amount != null ? amount.hashCode() : 0);
         result = 31 * result + (account != null ? account.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 }
